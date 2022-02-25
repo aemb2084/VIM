@@ -12,7 +12,7 @@ func main() {
 	fmt.Printf("La multiplicacion = %v \n", mult(5, 6))
 	fmt.Printf("La divición es = %0.2f \n", div(5, 6))
 
-// creando algo de texto en mi vim
+	// creando algo de texto en mi vim
 
 	switch suma1 {
 	case 1:
