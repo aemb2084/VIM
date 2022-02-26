@@ -9,16 +9,22 @@ Existen dos modos:
 
 ## Comandos generales para el uso de VIM
 
+**General**
+
 |Tecla|Combinación|Función
 |:-|:-|:-
 |:|w|Guarda cambios
 |:|wq|Guarda cambios y cierra
 |:|x|Guarda y cierra
-|:|q!|Cierrra sin guardar.
+|:|q!|Cierra sin guardar.
 |i||Entra en modo **INSERT**, ubica el cursor antes del caracter seleccionado.
 |a||Entra en modo **INCERT**, ubica el cursor despues del caracter seleccionado. 
 |A||Entra en modo **INCERT**, ubica el cursor al final de la línea.
-|x||Elimina los caracteres que se encuentran al lado derecho del cursor.
+
+**Navegación**
+
+|Tecla|Combinación|Función
+|:-|:-|:-
 |h||Mueve cursor hacia la izquierda
 |j||Mueve cursor hacia abajo
 |k||Mueve cursor hacia la arriva
@@ -30,6 +36,20 @@ Existen dos modos:
 |g|f|Me coloco sobre un llamado a funsión y con la combinación me guiará hacia su declaración
 |Ctrl|o|Regresa un paso atras desde el llamado realizado en el punto anterior a su llamado.
 |Ctrl|i|Regresa un paso adelante desde el punto funal en el que se encontraba el cursor.
+|g|g|Salta el inicio del documento
+|G||Salta al final del documento.
+|***n***|G|Salta a una línea determinada donde ***n*** es el número de línea al que se desea saltar.
+|***n***|k|Salta ***n*** líneas hacia arriba.
+|***n***|j|Salta ***n*** líneas hacia abajo.
+|/ o ?||busca conincidencias en texto, nos permite ingresar la palabra que deseamos buscar. Debemos presionar la tecla ***enter*** para confirmar la palabra que se esta buscando, para saltar entre todas las coincidencias lo hacemos presionando la letra ***n***. Para regresar a la bùsqueda de la palabra lo hacemos con le letra ***N***
+|}||Salta al siguiente bloque de código
+|{||Salta al siguiente bloque de código
+
+**Edición**
+
+|Tecla|Combinación|Función
+|:-|:-|:-
+|x||Elimina los caracteres que se encuentran delante del cursor.
 |d|w|Elimina toda una palabra incluyendo su espacio seguido.
 |d|e|Elimina toda una palabra.
 |d|b|Elimina la palabra que se encuentra detras del cursor.
@@ -37,26 +57,25 @@ Existen dos modos:
 |d|***n*** w|Elimina una determinada cantidad de caracteres donde ***n*** es la cantidad de palabras que se desea eliminar
 |u||Deshacer
 |Ctrl|r| Re-hacer
-|2*d||Corta/Elimina toda la línea
+|dd||Corta/Elimina toda la línea
+|yy||Copia una línea completa
 |p||Pega lo que contiene el clipboard en la línea siguiente en la que se encuentra el cursor.
 |P||Pega lo que contiene el clipboard en la línea anterior a la que se encuentra el cursor.
 |r||Sirve para reemplazar un caracter colocando el cursor sobre la letra que se desea cambiar.
 |R||Entra en modo insert lo que nos permite ir reemplazando de los caracteres de una palabra en contínuo a diferencia de *r* que solo reemplaza un solo caracter.
 |c|w|Cambiara una palabrac ompleta colocandonos sobre su primera letra, la función elimina la palabra.
-|g|g|Salta el inicio del documento
-|G||Salta al final del documento.
-|***n***|G|Salta a una línea determinada donde ***n*** es el número de línea al que se desea saltar.
-|***n***|k|Salta ***n*** líneas hacia arriba.
-|***n***|j|Salta ***n*** líneas hacia abajo.
 |/ o ?||busca conincidencias en texto, nos permite ingresar la palabra que deseamos buscar. Debemos presionar la tecla ***enter*** para confirmar la palabra que se esta buscando, para saltar entre todas las coincidencias lo hacemos presionando la letra ***n***. Para regresar a la bùsqueda de la palabra lo hacemos con le letra ***N***
-|%||Nos permite saltar al incio o final de un parentesis, corchete ó llaves
-|0||Salta el cursor al inicio de una línea
-|$||Salta el cursor al final de una línea
 |:|%s/***palabra***/***nueva palabra***/gc|Comando reemplaza la *palabra* por una *nueva palabra*. Nos preguntara cada vez que se vaya a reemplazar una palabra.
 |o||Inserta una lína debajo de la línea en la que se encuentra el cursor.
 |O||Inserta una lína arriba de la línea en la que se encuentra el cursor.
 |v||Ingresamos en modo visual lo que nos permite seleccionar una cadena de caracteres para así poderla eliminar, cortar, copiar, etc.
 |y||En combinación con el comando *v*, una vez seleccionado un texto podemos utilizar el comando *y* para comiar la cadena de caracteres seleccionada.
+|cc||Cambia una línea completa
+|cw||Cambia una palabra del cursor hacia adelante.
+|ciw||Cambia una palabra completa
+|~||Cambia de caso: mayúscula/minúscula
+
+
 
 Con esto hemos acabado de utilizar los comandos útiles para el uso de vim.
 
