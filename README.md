@@ -43,7 +43,7 @@ Existen dos modos:
 |***n***|j|Salta ***n*** líneas hacia abajo.
 |/ o ?||busca conincidencias en texto, nos permite ingresar la palabra que deseamos buscar. Debemos presionar la tecla ***enter*** para confirmar la palabra que se esta buscando, para saltar entre todas las coincidencias lo hacemos presionando la letra ***n***. Para regresar a la bùsqueda de la palabra lo hacemos con le letra ***N***
 |}||Salta al siguiente bloque de código
-|{||Salta al siguiente bloque de código
+|{||Regresa al anterior bloque de código
 
 **Edición**
 
