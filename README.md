@@ -192,7 +192,8 @@ PRimero instalamos todas las herramientas necesarias como las siguientes:
 2. GIT
 3. NODEJS
 4. NPM
-5. NEOVIM
+5. YARN
+6. NEOVIM
 
 
 ## MUY IMPORTANTE PARA CONFIGURAR GO
