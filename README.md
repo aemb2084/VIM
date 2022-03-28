@@ -164,3 +164,33 @@ Para salta de un panel a otro podemos utilizar las sigueintes combinaciones:
 
 - Ctrl + l, Salta al panel del lado derecha.
 - Ctrl + h, salta al panel del lado izquierdo.
+
+
+## CONFIGURACIÓN DE NVIM EN UBUNTU
+
+PRimero instalamos todas las herramientas necesarias como las siguientes:
+1. GO
+2. GIT
+3. NODEJS
+4. NPM
+5. NEOVIM
+
+
+## MUY IMPORTANTE PARA CONFIGURAR GO
+
+Debemos configurar las variables de entorno de la siguiente manera:
+
+1. Abrimos archivo de configuración:
+
+   ```sh
+   nvim $HOME/.bashrc
+   ```
+
+2. Agrgamos las siguientes dos líneas de código:
+
+   ```sh
+   export GOPATH=$HOME/go
+   export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
+   ```
+
+3. Reiniciamos el sistema.
