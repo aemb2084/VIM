@@ -8,12 +8,8 @@ set softtabstop=4
 set mouse=a
 set updatetime=500
 set encoding=UTF-8
-"Selecciono color que mostrara el límite de caracteres por línea, máximo 80
 highlight ColorColumn ctermbg=235 guibg=#2c2d27
-"Habilito únicamente la columna 80 para todas las líneas
 set colorcolumn=80
-"Habilito todas las columnas en las filas a partir del caracter 80
-"let &colorcolumn=join(range(81,999),",")
 
 call plug#begin('~/AppData/Local/nvim/plugged')
 
@@ -36,10 +32,29 @@ Plug 'dart-lang/dart-vim-plugin'
 Plug 'thosakwe/vim-flutter'
 Plug 'natebosch/vim-lsc'
 Plug 'natebosch/vim-lsc-dart'
+Plug 'github/copilot.vim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'stevearc/dressing.nvim' " optional for vim.ui.select
+Plug 'akinsho/flutter-tools.nvim'
+Plug 'altercation/vim-colors-solarized'
 
 call plug#end()
 
-"NerdTree config
+" Flutter cpnfig
+ " Show hover
+nnoremap K <Cmd>lua vim.lsp.buf.hover()<CR>
+ " Jump to definition
+nnoremap gd <Cmd>lua vim.lsp.buf.definition()<CR>
+ " Open code actions using the default lsp UI, if you want to change this please see the plugins above
+nnoremap <leader>ca <Cmd>lua vim.lsp.buf.code_action()<CR>
+ " Open code actions for the selected visual range
+xnoremap <leader>ca <Cmd>lua vim.lsp.buf.range_code_action()<CR>
+ " Show diagnostics
+nnoremap <leader>cd <Cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>
+ " Go to next diagnostic
+nnoremap <leader>dn <Cmd>lua vim.lsp.diagnostic.goto_next()<CR>
+
+ "NerdTree config
 nnoremap <leader>n :NERDTreeFocus<CR>
 nnoremap <C-n> :NERDTree<CR>
 nnoremap <C-t> :NERDTreeToggle<CR>
@@ -175,5 +190,3 @@ nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
 " Resume latest coc list
 
 nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
-
-
