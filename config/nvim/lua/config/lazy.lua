@@ -181,7 +181,9 @@ require("lazy").setup({
       require("mason-lspconfig").setup({
         ensure_installed = { 
           "lua_ls", 
-          "pyright", 
+          "pyright",
+          "pylsp",
+          "ruff_lsp",
           "ts_ls",  -- Reemplaza tsserver
           "html",
           "cssls",
@@ -208,7 +210,41 @@ require("lazy").setup({
             },
           },
         },
-        pyright = {},
+        pyright = {
+          settings = {
+            python = {
+              analysis = {
+                typeCheckingMode = "basic",
+                autoSearchPaths = true,
+                useLibraryCodeForTypes = true,
+                autoImportCompletions = true,
+              },
+            },
+          },
+        },
+        pylsp = {
+          settings = {
+            pylsp = {
+              plugins = {
+                pycodestyle = { enabled = false },
+                mccabe = { enabled = false },
+                pyflakes = { enabled = false },
+                flake8 = { enabled = false },
+                autopep8 = { enabled = false },
+                yapf = { enabled = false },
+                rope_autoimport = { enabled = true },
+                rope_completion = { enabled = true },
+              },
+            },
+          },
+        },
+        ruff_lsp = {
+          init_options = {
+            settings = {
+              args = {},
+            },
+          },
+        },
         ts_ls = {},
         html = {},
         cssls = {},
@@ -402,9 +438,14 @@ require("lazy").setup({
       wk.add({
         { "<leader>f", group = "Find" },
         { "<leader>h", group = "Git Hunks" },
-        { "<leader>c", group = "Code" },
-        { "<leader>t", group = "Tabs" },
-        { "<leader>s", group = "Splits" },
+        { "<leader>c", group = "Code/Coverage" },
+        { "<leader>t", group = "Tabs/Tests" },
+        { "<leader>s", group = "Splits/Send" },
+        { "<leader>d", group = "Debug" },
+        { "<leader>r", group = "REPL" },
+        { "<leader>v", group = "Virtual Environment" },
+        { "<leader>n", group = "Neogen" },
+        { "<leader>m", group = "Format" },
       })
     end,
   },
@@ -484,6 +525,234 @@ require("lazy").setup({
           },
         },
       })
+    end,
+  },
+
+  -- Python-specific plugins
+  {
+    "linux-cultist/venv-selector.nvim",
+    dependencies = { "neovim/nvim-lspconfig", "nvim-telescope/telescope.nvim", "mfussenegger/nvim-dap-python" },
+    config = function()
+      require("venv-selector").setup({
+        auto_refresh = true,
+        dap_enabled = true,
+        anaconda_base_path = "~/anaconda3",
+        anaconda_envs_path = "~/anaconda3/envs",
+      })
+      vim.keymap.set("n", "<leader>vs", "<cmd>VenvSelect<cr>", { desc = "Select Python Virtual Environment" })
+      vim.keymap.set("n", "<leader>vc", "<cmd>VenvSelectCached<cr>", { desc = "Select Cached Python Virtual Environment" })
+    end,
+  },
+
+  -- Python debugging
+  {
+    "mfussenegger/nvim-dap",
+    dependencies = {
+      "rcarriga/nvim-dap-ui",
+      "theHamsta/nvim-dap-virtual-text",
+      "mfussenegger/nvim-dap-python",
+    },
+    config = function()
+      local dap = require("dap")
+      local dapui = require("dapui")
+
+      dapui.setup()
+      require("nvim-dap-virtual-text").setup()
+
+      -- Python debugging setup
+      require("dap-python").setup("python")
+
+      -- DAP keymaps
+      vim.keymap.set("n", "<leader>db", dap.toggle_breakpoint, { desc = "Toggle Breakpoint" })
+      vim.keymap.set("n", "<leader>dc", dap.continue, { desc = "Continue" })
+      vim.keymap.set("n", "<leader>do", dap.step_over, { desc = "Step Over" })
+      vim.keymap.set("n", "<leader>di", dap.step_into, { desc = "Step Into" })
+      vim.keymap.set("n", "<leader>dr", dap.repl.open, { desc = "Open REPL" })
+      vim.keymap.set("n", "<leader>dl", dap.run_last, { desc = "Run Last" })
+      vim.keymap.set("n", "<leader>du", dapui.toggle, { desc = "Toggle DAP UI" })
+
+      -- Auto open/close DAP UI
+      dap.listeners.after.event_initialized["dapui_config"] = function()
+        dapui.open()
+      end
+      dap.listeners.before.event_terminated["dapui_config"] = function()
+        dapui.close()
+      end
+      dap.listeners.before.event_exited["dapui_config"] = function()
+        dapui.close()
+      end
+    end,
+  },
+
+  -- Enhanced Python testing
+  {
+    "nvim-neotest/neotest",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
+      "antoinemadec/FixCursorHold.nvim",
+      "nvim-neotest/neotest-python",
+    },
+    config = function()
+      require("neotest").setup({
+        adapters = {
+          require("neotest-python")({
+            dap = { justMyCode = false },
+            args = {"--log-level", "DEBUG"},
+            runner = "pytest",
+          }),
+        },
+      })
+
+      -- Test keymaps
+      vim.keymap.set("n", "<leader>tt", function() require("neotest").run.run() end, { desc = "Run Test" })
+      vim.keymap.set("n", "<leader>tf", function() require("neotest").run.run(vim.fn.expand("%")) end, { desc = "Run Test File" })
+      vim.keymap.set("n", "<leader>td", function() require("neotest").run.run({strategy = "dap"}) end, { desc = "Debug Test" })
+      vim.keymap.set("n", "<leader>ts", function() require("neotest").summary.toggle() end, { desc = "Toggle Test Summary" })
+      vim.keymap.set("n", "<leader>to", function() require("neotest").output_panel.toggle() end, { desc = "Toggle Test Output" })
+    end,
+  },
+
+  -- Code formatting and linting
+  {
+    "stevearc/conform.nvim",
+    config = function()
+      require("conform").setup({
+        formatters_by_ft = {
+          python = { "ruff_format", "ruff_fix" },
+          lua = { "stylua" },
+          javascript = { "prettier" },
+          typescript = { "prettier" },
+          json = { "prettier" },
+          yaml = { "prettier" },
+          markdown = { "prettier" },
+        },
+        format_on_save = {
+          timeout_ms = 500,
+          lsp_fallback = true,
+        },
+      })
+
+      -- Format keymap
+      vim.keymap.set({ "n", "v" }, "<leader>mp", function()
+        require("conform").format({
+          lsp_fallback = true,
+          async = false,
+          timeout_ms = 500,
+        })
+      end, { desc = "Format file or range (in visual mode)" })
+    end,
+  },
+
+  -- Python REPL
+  {
+    "Vigemus/iron.nvim",
+    config = function()
+      local iron = require("iron.core")
+      iron.setup({
+        config = {
+          scratch_repl = true,
+          repl_definition = {
+            python = {
+              command = {"python3"},
+              format = require("iron.fts.common").bracketed_paste,
+            }
+          },
+          repl_open_cmd = require("iron.view").bottom(40),
+        },
+        keymaps = {
+          send_motion = "<space>sc",
+          visual_send = "<space>sc",
+          send_file = "<space>sf",
+          send_line = "<space>sl",
+          send_mark = "<space>sm",
+          mark_motion = "<space>mc",
+          mark_visual = "<space>mc",
+          remove_mark = "<space>md",
+          cr = "<space>s<cr>",
+          interrupt = "<space>s<space>",
+          exit = "<space>sq",
+          clear = "<space>cl",
+        },
+        highlight = {
+          italic = true
+        },
+        ignore_blank_lines = true,
+      })
+      
+      -- REPL keymaps
+      vim.keymap.set("n", "<leader>rs", "<cmd>IronRepl<cr>", { desc = "Start REPL" })
+      vim.keymap.set("n", "<leader>rr", "<cmd>IronRestart<cr>", { desc = "Restart REPL" })
+      vim.keymap.set("n", "<leader>rf", "<cmd>IronFocus<cr>", { desc = "Focus REPL" })
+      vim.keymap.set("n", "<leader>rh", "<cmd>IronHide<cr>", { desc = "Hide REPL" })
+    end,
+  },
+
+  -- Enhanced Python syntax and indentation
+  {
+    "Vimjas/vim-python-pep8-indent",
+    ft = "python",
+  },
+
+  -- Python docstring generator
+  {
+    "danymat/neogen",
+    dependencies = "nvim-treesitter/nvim-treesitter",
+    config = function()
+      require("neogen").setup({
+        enabled = true,
+        languages = {
+          python = {
+            template = {
+              annotation_convention = "google_docstrings"
+            }
+          }
+        }
+      })
+      
+      vim.keymap.set("n", "<leader>nf", function() require("neogen").generate({ type = "func" }) end, { desc = "Generate Function Docstring" })
+      vim.keymap.set("n", "<leader>nc", function() require("neogen").generate({ type = "class" }) end, { desc = "Generate Class Docstring" })
+      vim.keymap.set("n", "<leader>nt", function() require("neogen").generate({ type = "type" }) end, { desc = "Generate Type Docstring" })
+    end,
+  },
+
+  -- Python import sorting
+  {
+    "PythonNut/vim-isort",
+    ft = "python",
+    config = function()
+      vim.keymap.set("n", "<leader>is", "<cmd>Isort<cr>", { desc = "Sort Python Imports" })
+    end,
+  },
+
+  -- Python coverage
+  {
+    "andythigpen/nvim-coverage",
+    dependencies = "nvim-lua/plenary.nvim",
+    config = function()
+      require("coverage").setup({
+        commands = true,
+        highlights = {
+          covered = { fg = "#C3E88D" },
+          uncovered = { fg = "#F07178" },
+        },
+        signs = {
+          covered = { hl = "CoverageCovered", text = "▎" },
+          uncovered = { hl = "CoverageUncovered", text = "▎" },
+        },
+        summary = {
+          min_coverage = 80.0,
+        },
+        lang = {
+          python = {
+            coverage_command = "coverage json --fail-under=0 -q -o -",
+          },
+        },
+      })
+      
+      vim.keymap.set("n", "<leader>cc", function() require("coverage").load(true) end, { desc = "Load Coverage" })
+      vim.keymap.set("n", "<leader>cs", function() require("coverage").summary() end, { desc = "Coverage Summary" })
+      vim.keymap.set("n", "<leader>ct", function() require("coverage").toggle() end, { desc = "Toggle Coverage" })
     end,
   },
 })
