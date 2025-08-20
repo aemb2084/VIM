@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(chmod:*)",
+      "Bash(python3:*)",
+      "WebSearch",
+      "Bash(sudo add-apt-repository:*)",
+      "Bash(apt list:*)",
+      "Bash(apt:*)",
+      "Bash(rm:*)",
+      "Bash(export:*)",
+      "Bash(pip --version)",
+      "Bash(git add:*)",
+      "Bash(git push:*)",
+      "Bash(git config:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
